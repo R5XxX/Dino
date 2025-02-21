@@ -1,112 +1,135 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+
+<html lang="es" >
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego del T-Rex</title>
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            overflow: hidden;
-        }
-        canvas {
-            display: block;
-            margin: auto;
-            background-color: white;
-        }
-    </style>
+
+	<meta charset="utf-8" >
+
+	<title></title>
+
+	<script type="text/javascript" src="javascript/main.js" ></script>
+
+	<style type="text/css">
+
+		.img_oculta{
+
+			display: none;
+
+		}
+
+	</style>
+
 </head>
+
 <body>
-    <h1>Juego del T-Rex</h1>
-    <canvas id="gameCanvas" width="800" height="200"></canvas>
-    <script>
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
-        let trex = { x: 50, y: 150, width: 40, height: 40, vy: 0, gravity: 1, jumpPower: -15, jumping: false };
-        let obstacles = [];
-        let gameOver = false;
-        let score = 0;function drawTrex() {
-        ctx.fillStyle = "black";
-        ctx.fillRect(trex.x, trex.y, trex.width, trex.height);
-    }
-    
-    function updateTrex() {
-        trex.y += trex.vy;
-        trex.vy += trex.gravity;
-        if (trex.y > 150) {
-            trex.y = 150;
-            trex.jumping = false;
-        }
-    }
-    
-    function drawObstacles() {
-        ctx.fillStyle = "red";
-        obstacles.forEach(obstacle => {
-            ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-        });
-    }
-    
-    function updateObstacles() {
-        if (Math.random() < 0.02) {
-            obstacles.push({ x: canvas.width, y: 150, width: 20, height: 40 });
-        }
-        obstacles.forEach(obstacle => obstacle.x -= 5);
-        obstacles = obstacles.filter(obstacle => obstacle.x > -20);
-    }
-    
-    function checkCollision() {
-        obstacles.forEach(obstacle => {
-            if (
-                trex.x < obstacle.x + obstacle.width &&
-                trex.x + trex.width > obstacle.x &&
-                trex.y < obstacle.y + obstacle.height &&
-                trex.y + trex.height > obstacle.y
-            ) {
-                gameOver = true;
-            }
-        });
-    }
-    
-    function drawScore() {
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
-        ctx.fillText("Puntuación: " + score, 10, 20);
-    }
-    
-    function gameLoop() {
-        if (!gameOver) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            updateTrex();
-            updateObstacles();
-            checkCollision();
-            drawTrex();
-            drawObstacles();
-            drawScore();
-            score++;
-            requestAnimationFrame(gameLoop);
-        } else {
-            ctx.fillStyle = "black";
-            ctx.font = "30px Arial";
-            ctx.fillText("¡Game Over!", canvas.width / 2 - 80, canvas.height / 2);
-        }
-    }
-    
-    function jump() {
-        if (!trex.jumping) {
-            trex.vy = trex.jumpPower;
-            trex.jumping = true;
-        }
-    }
-    
-    document.addEventListener("keydown", event => {
-        if (event.code === "Space") jump();
-    });
-    
-    document.addEventListener("touchstart", () => jump());
-    
-    gameLoop();
-</script>
+
+	<h1 id="fb-welcome"></h1>
+
+	<script>
+
+	  window.fbAsyncInit = function() {
+
+	    FB.init({
+
+	      appId      : '1763771910519017',
+
+	      xfbml      : true,
+
+	      version    : 'v2.6'
+
+	    });
+
+
+
+	    // ADD ADDITIONAL FACEBOOK CODE HERE
+
+
+
+	    // Place following code after FB.init call.
+
+
+
+		function onLogin(response) {
+
+		  if (response.status == 'connected') {
+
+		    FB.api('/me?fields=first_name', function(data) {
+
+		      var welcomeBlock = document.getElementById('fb-welcome');
+
+		      welcomeBlock.innerHTML = 'Hello, ' + data.first_name + '!';
+
+		    });
+
+		  }
+
+		}
+
+
+
+		FB.getLoginStatus(function(response) {
+
+		  // Check login status on load, and if the user is
+
+		  // already logged in, go directly to the welcome message.
+
+		  if (response.status == 'connected') {
+
+		    onLogin(response);
+
+		  } else {
+
+		    // Otherwise, show Login dialog first.
+
+		    FB.login(function(response) {
+
+		      onLogin(response);
+
+		    }, {scope: 'user_friends, email'});
+
+		  }
+
+		});
+
+
+
+	  };
+
+
+
+	  (function(d, s, id){
+
+	     var js, fjs = d.getElementsByTagName(s)[0];
+
+	     if (d.getElementById(id)) {return;}
+
+	     js = d.createElement(s); js.id = id;
+
+	     js.src = "//connect.facebook.net/en_US/sdk.js";
+
+	     fjs.parentNode.insertBefore(js, fjs);
+
+	   }(document, 'script', 'facebook-jssdk'));
+
+	</script>
+
+	<canvas id="juego" width="780px" height="550px" >
+
+		Tu navegador no soporta Canvas :(
+
+	</canvas>
+
+	<img src="sprites/nubes.png" id="nubes" class="img_oculta" >
+
+	<img src="sprites/d1.png" id="d1" class="img_oculta" >
+
+	<img src="sprites/d2.png" id="d2" class="img_oculta" >
+
+	<img src="sprites/d3.png" id="d3" class="img_oculta" >
+
+	<img src="sprites/arbol.png" id="arbol" class="img_oculta" >
 
 </body>
+
 </html>
