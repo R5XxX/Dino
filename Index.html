@@ -7,11 +7,13 @@
         body {
             text-align: center;
             font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            overflow: hidden;
         }
         canvas {
-            border: 1px solid black;
             display: block;
-            margin: 0 auto;
+            margin: auto;
+            background-color: white;
         }
     </style>
 </head>
@@ -21,7 +23,7 @@
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
-        let trex = { x: 50, y: 150, width: 40, height: 40, vy: 0, gravity: 2, jumpPower: -20, jumping: false };
+        let trex = { x: 50, y: 150, width: 40, height: 40, vy: 0, gravity: 1, jumpPower: -15, jumping: false };
         let obstacles = [];
         let gameOver = false;
         let score = 0;function drawTrex() {
@@ -90,12 +92,18 @@
         }
     }
     
-    document.addEventListener("keydown", event => {
-        if (event.code === "Space" && !trex.jumping) {
+    function jump() {
+        if (!trex.jumping) {
             trex.vy = trex.jumpPower;
             trex.jumping = true;
         }
+    }
+    
+    document.addEventListener("keydown", event => {
+        if (event.code === "Space") jump();
     });
+    
+    document.addEventListener("touchstart", () => jump());
     
     gameLoop();
 </script>
